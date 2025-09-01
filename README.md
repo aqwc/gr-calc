@@ -5,3 +5,19 @@ The main.py file contains parameters that can be changed by the user. Please mak
 
 This tool uses Janne Lampilahti's aerosol functions package:
 https://github.com/jlpl/aerosol-functions
+
+## How to use the code
+
+You need data in netCDF file, with 30 minutes resolution. An example file is provided ("Nanjing.nc"). To run a simulation:
+
+> python3 main.py -f Nanjing.nc -s 2011-12-02 -e 2011-12-03
+
+or alternatively:
+
+> python3 main.py -f Nanjing.nc -s 2011-12-02 -d 2
+
+This command calculates growth rates between Dec 2nd and 3rd (including the end date). If events were found with at least two methods, they are plotted and summarized in the output file.
+
+Print complete list of command line options with :
+
+  > python3 main.py -h

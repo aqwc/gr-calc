@@ -8,3 +8,4 @@ plots/*
 *.txt
 *.csv
 *.odp
+!Nanjing.nc

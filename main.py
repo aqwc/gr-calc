@@ -14,7 +14,7 @@ from datetime import timedelta, datetime
 from time import time
 from xarray import open_dataset
 import argparse
-# from pdb import set_trace as bp
+from pdb import set_trace as bp
 import print_event
 
 default_file_name = "Beijing.nc" #in the same folder as this code, unless -d or --data flag was pointing to another directory
@@ -291,7 +291,7 @@ def show_results(file_name,start_date,df_data,df_plot,df_MF_peaks,MF_gr_points,d
     all_events, final_events = growth_events.init_events(df_data,df_plot,MF_gr_points,MC_gr_points,AT_gr_points,mc_area_edges,mgsc)
 
     ts_info = growth_events.timestamp_info(all_events)
-
+    # bp()
     if any([result_config['plot_all_points'],result_config['plot_all_lines'],
             result_config['plot_final_events'],result_config['plot_DT']]):
 
@@ -507,7 +507,7 @@ def show_results(file_name,start_date,df_data,df_plot,df_MF_peaks,MF_gr_points,d
 
         return ts_info,df_MF_peaks,dfdf,MF_gr_points,df_plot
     else:
-        return ts_info,df_MF_peaks
+        return ts_info,all_events, final_events #,df_MF_peaks
 
 if __name__ == "__main__":
 
@@ -534,6 +534,9 @@ if __name__ == "__main__":
     parser.add_argument('--plot_event_info', action='store_true',help = 'plots estimated growth rate and range for each event (white box) XXX')
     # parser.add_argument('--plot_DT', action='store_true',help = 'plots disappearance times (NOT FINISHED!)')
     parser.add_argument('--duration','-d', default=0, type=int,help = 'Lenght of days to consider, starting from --start. if zero, --end is used (default 0)')
+    parser.add_argument('--prefix','-x', default='', type=str,help = 'prefix for output files')
+    parser.add_argument('--suffix','-y', default='', type=str,help = 'suffix for output files')
+    parser.add_argument('--interactive','-i',action='store_true',help = 'Turn interactive mode on before showing the plot (plt.ion())')
 
     ## Parse arguments
     args = parser.parse_args()
@@ -553,12 +556,13 @@ if __name__ == "__main__":
         plot_config['vmax'] = 5e20
         plot_config['cmap'] = 'Greys'
 
-    outfile_body = f'{file_name[0:3]}{start_date[2:4]}{start_date[5:7]}{start_date[-2:]}'
+    outfile_body = f'{args.prefix}{file_name[0:3]}{start_date[2:4]}{start_date[5:7]}{start_date[-2:]}{args.suffix}_event_Summary.txt'
 
-    ts_info,df_MF_peaks = main()
+    ts_info,all_events, final_events = main()
 
     print_event.prettyPrint(ts_info,outfile_body)
-
+    if args.interactive:
+        plt.ion()
     plt.show()
 
 
